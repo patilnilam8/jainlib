@@ -1,37 +1,48 @@
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-const uploadDir = "/home/jaindigambar/public_html/uploads"; // Adjust path as needed
+// Config
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+});
 
-// Ensure the directory exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    
+// Storage
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    let folder = "others";
+    let resource_type = "auto";
+
     if (file.mimetype === "application/pdf") {
-      const name = req.body.name || 'unnamed';
-      const englishName = req.body.englishName || 'unnamed';
-      
-      // Sanitize file name for PDF
-      const safeName = `${name}_${englishName}`.replace(/[^a-zA-Z0-9_\-–—\s\u0900-\u097F]/g, '_');
-      
-      cb(null, `${safeName}${ext}`);
-    } else {
-      // Keep original filename for images
-      cb(null, file.originalname);
+      folder = "granth_pdfs";
+      resource_type = "raw"; // IMPORTANT for PDF
+    } else if (file.mimetype.startsWith("image")) {
+      if (file.fieldname === "coverPhoto") {
+        folder = "granth_covers";
+      } else {
+        folder = "granth_images";
+      }
     }
+
+    const name = req.body.name || "unnamed";
+    const englishName = req.body.englishName || "unnamed";
+
+    const safeName = `${name}_${englishName}`
+      .replace(/[^a-zA-Z0-9_\-–—\s\u0900-\u097F]/g, "_");
+
+    return {
+      folder,
+      public_id: safeName,
+      resource_type
+    };
   }
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["application/pdf", "image/jpeg", "image/png","image/jpg"];
+  const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -39,6 +50,4 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage :storage, fileFilter });
-
-module.exports = upload; // Export using CommonJS
+module.exports = multer({ storage, fileFilter });

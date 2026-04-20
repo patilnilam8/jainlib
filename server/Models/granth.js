@@ -6,6 +6,9 @@ const granthSchema = new mongoose.Schema({
   pdfUrl: { type: String, required: true },
   imageUrl: { type: String },         // Thumbnail
   coverPhoto: { type: String },       // Cover image
+  pdfPublicId:{type: String },
+imagePublicId: { type: String },
+coverPublicId:{type: String },
   downloadCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date },

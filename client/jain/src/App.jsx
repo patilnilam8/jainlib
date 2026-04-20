@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Granthlist from "./pages/Granthlist";
 import ProtectedRoute from "./pages/ProtectedRoute";
-// import UserLogin from "./component/UserLogin";
+
 import Footer from "./component/Footer";
 import Mandirlist from "./pages/Mandirlist";
 // import UserRegister from "./component/UserRegister";

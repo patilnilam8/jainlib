@@ -1,40 +1,39 @@
 const Granth = require("../Models/granth");
+const cloudinary = require("cloudinary").v2;
+
 
 
 const addGranth = async (req, res) => {
   try {
-      console.log("Received form data:", req.body); // ✅ Check received form fields
-      console.log("Received files:", req.files); // ✅ Check uploaded files
+    const { name, englishName } = req.body;
 
-      const { name,englishName } = req.body;
-const BASE_URL = process.env.BASE_URL || `${BASE_URL}://${req.get("host")}`;
-      // ✅ Correctly extract file URLs
-      const pdfFile = req.files?.["pdf"]?.[0];
-const imageFile = req.files?.["image"]?.[0];
-const coverPhotoFile = req.files?.["coverPhoto"]?.[0];
+    const pdfUrl = req.files?.pdf?.[0]?.path;
+    const imageUrl = req.files?.image?.[0]?.path;
+    const coverPhoto = req.files?.coverPhoto?.[0]?.path;
+   const pdfPublicId= req.files?.pdf?.[0]?.filename;
+ const imagePublicId= req.files?.image?.[0]?.filename;
+ const coverPublicId=req.files?.coverPhoto?.[0]?.filename;
 
-const pdfUrl = pdfFile ? `${BASE_URL}/uploads/${pdfFile.filename}` : null;
-const imageUrl = imageFile ? `${BASE_URL}/uploads/${imageFile.filename}` : null;
-const coverPhoto = coverPhotoFile ? `${BASE_URL}/uploads/${coverPhotoFile.filename}` : null;
-      console.log("Received files:", req.files);  // Log uploaded files
-      console.log("Protocol:", BASE_URL);     // Should be 'http'
-      console.log("Host:", req.get("host"));
-      console.log("Processed PDF URL:", pdfUrl);
-      console.log("Processed Image URL:", imageUrl);
-      console.log("Processed Image URL:", coverPhoto);
+    if (!name || !englishName || !pdfUrl || !imageUrl || !coverPhoto || !pdfPublicId || !imagePublicId || !coverPublicId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
 
+    const newGranth = new Granth({
+  name,
+  englishName,
+  pdfUrl,
+  imageUrl,
+  coverPhoto,
+  pdfPublicId,
+  imagePublicId,
+  coverPublicId
+});
 
-      if (!name || !englishName || !pdfUrl || !imageUrl || !coverPhoto) {
-          return res.status(400).json({ message: "Missing required fields" });
-      }
+    await newGranth.save();
+    res.status(201).json(newGranth);
 
-      const newGranth = new Granth({ name, englishName, pdfUrl, imageUrl,coverPhoto });
-      await newGranth.save();
-
-      res.status(201).json(newGranth);
   } catch (error) {
-      console.error("Error adding Granth:", error);
-      res.status(500).json({ message: "Error adding Granth", error });
+    res.status(500).json({ message: "Error adding Granth" });
   }
 };
 
@@ -60,46 +59,109 @@ const getGranthById = async (req, res) => {
 const updateGranth = async (req, res) => {
   try {
     const { name, englishName } = req.body;
-const BASE_URL = process.env.BASE_URL || `${BASE_URL}://${req.get("host")}`;
-    // Fetch existing record first
-    const existingGranth = await Granth.findById(req.params.id);
-    if (!existingGranth) {
+
+    const granth = await Granth.findById(req.params.id);
+    if (!granth) {
       return res.status(404).json({ message: "Granth not found" });
     }
 
-    // Get updated file URLs if new files are uploaded
-    const pdfUrl = req.files && req.files["pdf"]
-      ? `${BASE_URL}/uploads/${req.files["pdf"][0].filename}`
-      : existingGranth.pdfUrl;
+    let pdfUrl = granth.pdfUrl;
+    let imageUrl = granth.imageUrl;
+    let coverPhoto = granth.coverPhoto;
 
-    const imageUrl = req.files && req.files["image"]
-      ? `${BASE_URL}/uploads/${req.files["image"][0].filename}`
-      : existingGranth.imageUrl;
+    let pdfPublicId = granth.pdfPublicId;
+    let imagePublicId = granth.imagePublicId;
+    let coverPublicId = granth.coverPublicId;
 
-      const coverPhoto = req.files && req.files["coverPhoto"]
-      ? `${BASE_URL}/uploads/${req.files["coverPhoto"][0].filename}`
-      : existingGranth.coverPhoto;
+    // 🔥 PDF update
+    if (req.files?.pdf) {
+      if (pdfPublicId) {
+        await cloudinary.uploader.destroy(pdfPublicId, {
+          resource_type: "raw"
+        });
+      }
+
+      pdfUrl = req.files.pdf[0].path;
+      pdfPublicId = req.files.pdf[0].filename;
+    }
+
+    // 🔥 Image update
+    if (req.files?.image) {
+      if (imagePublicId) {
+        await cloudinary.uploader.destroy(imagePublicId);
+      }
+
+      imageUrl = req.files.image[0].path;
+      imagePublicId = req.files.image[0].filename;
+    }
+
+    // 🔥 Cover update
+    if (req.files?.coverPhoto) {
+      if (coverPublicId) {
+        await cloudinary.uploader.destroy(coverPublicId);
+      }
+
+      coverPhoto = req.files.coverPhoto[0].path;
+      coverPublicId = req.files.coverPhoto[0].filename;
+    }
 
     const updatedGranth = await Granth.findByIdAndUpdate(
       req.params.id,
-      { name, englishName, pdfUrl, imageUrl,coverPhoto },
+      {
+        name,
+        englishName,
+        pdfUrl,
+        imageUrl,
+        coverPhoto,
+        pdfPublicId,
+        imagePublicId,
+        coverPublicId
+      },
       { new: true }
     );
 
     res.status(200).json(updatedGranth);
+
   } catch (err) {
-    console.error("Error updating Granth:", err);
+    console.error("Update error:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
 
+
 const deleteGranth = async (req, res) => {
   try {
-    const deletedGranth = await Granth.findByIdAndDelete(req.params.id);
-    if (!deletedGranth) return res.status(404).json({ message: "Granth not found" });
+    const granth = await Granth.findById(req.params.id);
+
+    if (!granth) {
+      return res.status(404).json({ message: "Granth not found" });
+    }
+
+    // 🔥 Delete PDF (raw type)
+    if (granth.pdfPublicId) {
+      await cloudinary.uploader.destroy(granth.pdfPublicId, {
+        resource_type: "raw"
+      });
+    }
+
+    // 🔥 Delete Image
+    if (granth.imagePublicId) {
+      await cloudinary.uploader.destroy(granth.imagePublicId);
+    }
+
+    // 🔥 Delete Cover Photo
+    if (granth.coverPublicId) {
+      await cloudinary.uploader.destroy(granth.coverPublicId);
+    }
+
+    // Delete from DB
+    await Granth.findByIdAndDelete(req.params.id);
+
     res.status(200).json({ message: "Granth deleted successfully" });
+
   } catch (err) {
+    console.error("Delete error:", err);
     res.status(500).json({ message: err.message });
   }
 };
