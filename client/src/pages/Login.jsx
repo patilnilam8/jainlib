@@ -15,7 +15,7 @@ const Login = () => {
     setError("");
     setLoading(true);
     try {
-      const res = await axios.post(`${API}/api/admin/login`, formData);
+      const res = await axios.post(`${API}/admin/login`, formData);
       // console.log("Server Response:", res.data); // Log full response
       login(res.data.token);
     } catch (error) {

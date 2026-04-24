@@ -49,7 +49,7 @@ const Mandirlist = () => {
     formDataObj.append("images", file);
   });
     try {
-      await axios.post("${API}/api/mandir", formDataObj, {
+      await axios.post("${API}/mandir", formDataObj, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       fetchMandir();
@@ -89,7 +89,7 @@ const Mandirlist = () => {
 
 
     try {
-      await axios.put(`${API}/api/mandir/${editData._id}`, formDataObj, {
+      await axios.put(`${API}/mandir/${editData._id}`, formDataObj, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       fetchMandir();
@@ -121,7 +121,7 @@ const Mandirlist = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this Granth?")) return;
     try {
-      await axios.delete(`${API}/api/mandir/${id}`);
+      await axios.delete(`${API}/mandir/${id}`);
       fetchMandir();
     } catch (error) {
       console.error("Error deleting mandir:", error);

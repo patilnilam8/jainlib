@@ -12,7 +12,7 @@ export const MandirProvider = ({ children }) => {
 
   const fetchMandir = async () => {
     try {
-      const res = await axios.get(`${API}/api/mandir`, {
+      const res = await axios.get(`${API}/mandir`, {
       headers: { "Cache-Control": "no-cache" } // Force fresh data
     });
     console.log('fetchmandir',res.data);
