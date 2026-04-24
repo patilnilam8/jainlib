@@ -163,10 +163,7 @@ const Mandirlist = () => {
 useEffect(() => {
   fetchMandir();
 
-  const interval = setInterval(() => {
-    fetchMandir();
-  }, 5000); // refresh every 5 sec
-
+  
   return () => clearInterval(interval);
 }, []);
 

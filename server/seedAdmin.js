@@ -4,12 +4,18 @@ const Admin = require("./Models/adminModel.js"); // Adjust path if needed
 const dotenv =require('dotenv')
 
 
-dotenv.config()
+require('dotenv').config();
+
+const mongoose = require("mongoose");
+
+mongoose.connect(process.env.mongo_url)
+  .then(() => console.log("✅ mongodb connected"))
+  .catch((err) => console.log("❌ error in connection", err));
 
 // Connect to MongoDB
-const mongourl= process.env.mongo_url
+const mongo_url= process.env.mongo_url
 
-mongoose.connect(mongourl,{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(mongo_url)
 .then(()=>console.log("mongodb connected"))
 .catch((err)=>console.log(" error in connection",err))
 

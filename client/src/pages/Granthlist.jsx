@@ -152,11 +152,7 @@ const totalFilteredPages = Math.ceil(filteredGranths.length / itemsPerPage);
 useEffect(() => {
   fetchGranths();
 
-  const interval = setInterval(() => {
-    fetchGranths();
-  }, 5000); // refresh every 5 sec
-
-  return () => clearInterval(interval);
+ 
 }, []);
 
   return (
