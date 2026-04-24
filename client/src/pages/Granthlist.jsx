@@ -47,7 +47,7 @@ const Granthlist = () => {
    
 
     try {
-      await axios.post(`${API}/granths`, formDataObj, {
+      await axios.post(`${API}/api/granths`, formDataObj, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       fetchGranths();
@@ -80,7 +80,7 @@ const Granthlist = () => {
     if (editData.coverPhoto) formDataObj.append("coverPhoto", editData.coverPhoto);
 
     try {
-      await axios.put(`${API}/granths/${editData._id}`, formDataObj, {
+      await axios.put(`${API}/api/granths/${editData._id}`, formDataObj, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       fetchGranths();
@@ -110,7 +110,7 @@ const Granthlist = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this Granth?")) return;
     try {
-      await axios.delete(`${API}/granths/${id}`);
+      await axios.delete(`${API}/api/granths/${id}`);
       fetchGranths();
     } catch (error) {
       console.error("Error deleting Granth:", error);

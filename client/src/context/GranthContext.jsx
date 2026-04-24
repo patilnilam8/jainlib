@@ -13,11 +13,11 @@ export const GranthProvider = ({ children }) => {
 
   const fetchGranths = async () => {
     try {
-      const res = await axios.get(axios.get("http://localhost:5001/api/granths"), {
+      const res = await axios.get(("http://localhost:5001/api/granths"), {
       headers: { "Cache-Control": "no-cache" } // Force fresh data
     });
     console.log('fetchGranths',res.data);
-      setGranths(res.data);
+      setGranths(res.data.data || res.data)
     } catch (error) {
       console.error("Error fetching Granths:", error);
     } 

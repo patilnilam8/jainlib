@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-
+const API = import.meta.env.VITE_API_URL;
 const MandirContext = createContext();
 
 export const MandirProvider = ({ children }) => {
@@ -12,13 +12,13 @@ export const MandirProvider = ({ children }) => {
 
   const fetchMandir = async () => {
     try {
-      const res = await axios.get("${API}/mandir", {
+      const res = await axios.get(`${API}/api/mandir`, {
       headers: { "Cache-Control": "no-cache" } // Force fresh data
     });
     console.log('fetchmandir',res.data);
-      setMandir(res.data);
+     setMandir(Array.isArray(res.data.data) ? res.data.data : res.data);
     } catch (error) {
-      console.error("Error fetching Granths:", error);
+      console.error("Error fetching mandir:", error);
     } 
   };
 const [currentPage, setCurrentPage] = useState(1);
