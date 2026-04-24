@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
-
+const API = import.meta.env.VITE_API_URL;
 const GranthContext = createContext();
 
 export const GranthProvider = ({ children }) => {
@@ -13,7 +13,7 @@ export const GranthProvider = ({ children }) => {
 
   const fetchGranths = async () => {
     try {
-      const res = await axios.get(("http://localhost:5001/api/granths"), {
+      const res = await axios.get((`${API}/granths`), {
       headers: { "Cache-Control": "no-cache" } // Force fresh data
     });
     console.log('fetchGranths',res.data);
