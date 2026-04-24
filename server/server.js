@@ -25,6 +25,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/granths", granthroutes);
 app.use("/api/mandir", mandirroutes);
 
+app.get("/", (req, res) => {
+  res.json({ message: "Backend is live" });
+});
+
 app.get("/api/test", (req, res) => {
   res.json({ message: "API is working!" });
 });
