@@ -14,7 +14,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://your-frontend-url.vercel.app"
+    "https://jainlib.vercel.app/"
   ],
   credentials: true
 }));
