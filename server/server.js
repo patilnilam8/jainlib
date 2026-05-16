@@ -14,7 +14,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://digajain.netlify.app",
+    "",
     "https://digambarjain.in",
     "https://www.digambarjain.in"
   ],
