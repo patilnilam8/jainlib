@@ -90,9 +90,12 @@ const updatedGranth = response.data;
       console.log('Download count incremented');
       // Trigger file download if needed (optional)
       console.log(granth.pdfUrl)
-      const downloadUrl = granth.pdfUrl.replace(
-      "/upload/",
-      "/upload/fl_attachment/"
+      const fileName = `${granth.name}.pdf`;
+
+const downloadUrl = granth.pdfUrl.replace(
+  "/upload/",
+  `/upload/fl_attachment:${encodeURIComponent(fileName)}/`
+
     );
 
     window.location.href = downloadUrl; // Or whichever file link
