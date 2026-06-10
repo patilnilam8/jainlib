@@ -76,7 +76,7 @@ const totalFilteredPages = Math.ceil(filteredGranths.length / itemsPerPage);
 
 const handleDownload = async (granth) => {
     try {
-      const response = await axios.put(`${API}/granths/download/${granth.id}`);
+      const response = await axios.put(`${API}/granths/download/${granth._id}`);
 
 const updatedGranth = response.data;
 
