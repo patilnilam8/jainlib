@@ -89,7 +89,7 @@ const updatedGranth = response.data;
       // updateGranthInState(response.data);
       console.log('Download count incremented');
       // Trigger file download if needed (optional)
-      console.log(updatedGranths.pdfUrl)
+      console.log(granth.pdfUrl)
       const downloadUrl = granth.pdfUrl.replace(
       "/upload/",
       "/upload/fl_attachment/"
