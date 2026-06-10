@@ -89,12 +89,25 @@ const updatedGranth = response.data;
       // updateGranthInState(response.data);
       console.log('Download count incremented');
       // Trigger file download if needed (optional)
-      window.open(updatedGranths.pdfUrl, '_blank'); // Or whichever file link
+      console.log(updatedGranths.pdfUrl)
+      const downloadUrl = updatedGranths.pdfUrl.replace(
+      "/upload/",
+      "/upload/fl_attachment/"
+    );
+
+    window.location.href = downloadUrl; // Or whichever file link
     } catch (error) {
       console.error("Failed to increment download count", error);
     }
   };
+const downloadCover = (coverUrl) => {
+  const downloadUrl = coverUrl.replace(
+    "/upload/",
+    "/upload/fl_attachment/"
+  );
 
+  window.location.href = downloadUrl;
+};
   return (
     <motion.div
   className="px-4 sm:px-6 lg:px-8 py-6 bg-gradient-to-r from-orange-400 to-yellow-400 min-h-screen"
@@ -199,26 +212,21 @@ const updatedGranth = response.data;
 
           {/* Download Buttons */}
           <div className="flex flex-wrap justify-center gap-2 mt-2">
-            <a
-              href={pdfUrl}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
+            <div
+              
+              
               onClick={() => handleDownload(granth._id)}
               className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded hover:bg-blue-700 transition cursor-pointer"
             >
               Download Granth
-            </a>
+            </div>
 
-            <a
-              href={coverUrl}
-              download
-               target="_blank"
-               rel="noopener noreferrer"
+            <div
+              onClick={() => handleDownload(coverUrl)}
               className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded hover:bg-blue-700 transition cursor-pointer"
             >
               Download Cover
-            </a>
+            </div>
           </div>
         </div>
       </motion.div>
