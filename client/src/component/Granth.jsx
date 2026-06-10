@@ -93,7 +93,7 @@ const updatedGranth = response.data;
       
 const downloadUrl = granth.pdfUrl.replace(
   "/upload/",
-  "/upload/fl_attachment:granth.pdf/"
+  "/upload/fl_attachment/"
 );
 
     window.location.href = downloadUrl; // Or whichever file link
