@@ -222,7 +222,7 @@ const downloadCover = (coverUrl) => {
             </div>
 
             <div
-              onClick={() => handleDownload(coverUrl)}
+              onClick={() => downloadCover(coverUrl)}
               className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded hover:bg-blue-700 transition cursor-pointer"
             >
               Download Cover
