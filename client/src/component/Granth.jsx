@@ -74,9 +74,9 @@ const endIndex = startIndex + itemsPerPage;
 const currentGranths = filteredGranths.slice(startIndex, endIndex);
 const totalFilteredPages = Math.ceil(filteredGranths.length / itemsPerPage);
 
-const handleDownload = async (granthId) => {
+const handleDownload = async (granth) => {
     try {
-      const response = await axios.put(`${API}/granths/download/${granthId}`);
+      const response = await axios.put(`${API}/granths/download/${granth.id}`);
 
 const updatedGranth = response.data;
 
@@ -215,7 +215,7 @@ const downloadCover = (coverUrl) => {
             <div
               
               
-              onClick={() => handleDownload(granth._id)}
+              onClick={() => handleDownload(granth)}
               className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded hover:bg-blue-700 transition cursor-pointer"
             >
               Download Granth
