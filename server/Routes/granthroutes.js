@@ -4,7 +4,7 @@ const {
     addGranth, 
     getGranths, 
     updateGranth,  // Add this function in your controller
-    deleteGranth ,downloadGranth
+    deleteGranth ,downloadGranth,
 } = require("../controller/granthcontroller.js");
 const Granth = require("../Models/granth.js")
 const router = express.Router();

@@ -44,11 +44,13 @@ const storage = new CloudinaryStorage({
     publicId = `${safeName}${ext}`;
   }
 
-  return {
-    folder,
-    public_id: publicId,
-    resource_type
-  };
+ return {
+  folder,
+  public_id: publicId,
+  resource_type,
+  overwrite: true,
+  invalidate: true
+};
 }
 });
 
