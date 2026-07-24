@@ -75,34 +75,18 @@ const currentGranths = filteredGranths.slice(startIndex, endIndex);
 const totalFilteredPages = Math.ceil(filteredGranths.length / itemsPerPage);
 
 const handleDownload = async (granth) => {
-    try {
-      const response = await axios.put(`${API}/granths/download/${granth._id}`);
+  try {
+    await axios.put(`${API}/granths/download/${granth._id}`);
 
-const updatedGranth = response.data;
+    console.log("Download count incremented");
 
-    // Update the granths state manually if needed
-    const updatedGranths = granths.map(g =>
-      g._id === updatedGranth._id ? updatedGranth : g
-    );
+    // Download from your backend
+    window.location.href = `${API}/granths/download/${granth._id}`;
 
-      // Update context state with the new granth data (including updated downloadCount)
-      // updateGranthInState(response.data);
-      console.log('Download count incremented');
-      // Trigger file download if needed (optional)
-      console.log(granth.pdfUrl)
- 
-
-const downloadUrl = granth.pdfUrl.replace(
-  "/upload/",
-  "/upload/fl_attachment/"
-
-    );
-
-    window.location.href = downloadUrl; // Or whichever file link
-    } catch (error) {
-      console.error("Failed to increment download count", error);
-    }
-  };
+  } catch (error) {
+    console.error("Failed to increment download count", error);
+  }
+};
 const downloadCover = (coverUrl) => {
   const downloadUrl = coverUrl.replace(
     "/upload/",

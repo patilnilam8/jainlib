@@ -1,6 +1,6 @@
 const Granth = require("../Models/granth");
 const cloudinary = require("cloudinary").v2;
-
+const axios = require("axios");
 
 
 const addGranth = async (req, res) => {
@@ -166,7 +166,43 @@ const deleteGranth = async (req, res) => {
   }
 };
 
+
+const downloadGranth = async (req, res) => {
+  try {
+    const granth = await Granth.findById(req.params.id);
+
+    if (!granth) {
+      return res.status(404).json({ message: "Granth not found" });
+    }
+
+    // Increment download count if you have one
+    
+
+    // Get PDF from Cloudinary
+    const response = await axios.get(granth.pdfUrl, {
+      responseType: "stream",
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    const fileName =
+      `${granth.name}_${granth.englishName}.pdf`
+        .replace(/[^\w\u0900-\u097F.-]/g, "_");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"`
+    );
+
+    response.data.pipe(res);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // ✅ Export all functions properly
-module.exports = { addGranth, getGranths, getGranthById, updateGranth, deleteGranth };
+module.exports = { addGranth, getGranths, getGranthById, updateGranth, deleteGranth , downloadGranth};
 
 

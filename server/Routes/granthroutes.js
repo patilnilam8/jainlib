@@ -4,7 +4,7 @@ const {
     addGranth, 
     getGranths, 
     updateGranth,  // Add this function in your controller
-    deleteGranth 
+    deleteGranth ,downloadGranth
 } = require("../controller/granthcontroller.js");
 const Granth = require("../Models/granth.js")
 const router = express.Router();
@@ -14,6 +14,7 @@ router.post("/", upload.fields([{ name: "pdf" }, { name: "image" },{name:"coverP
 
 // Get all Granths
 router.get("/", getGranths);
+router.get("/download/:id", downloadGranth);
 
 // MOVE THIS ABOVE /:id
 router.put('/download/:id', async (req, res) => {
