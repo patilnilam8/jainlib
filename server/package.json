@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-
   "engines": {
     "node": "20.x"
   },
@@ -16,6 +15,7 @@
   "author": "Nilam",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.18.1",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
