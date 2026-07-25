@@ -169,11 +169,12 @@ const deleteGranth = async (req, res) => {
 
 const downloadGranth = async (req, res) => {
   try {
+    console.log("========== DOWNLOAD ==========");
     console.log("Download ID:", req.params.id);
 
     const granth = await Granth.findById(req.params.id);
 
-    console.log("Granth:", granth);
+    console.log("Granth Found:", !!granth);
 
     if (!granth) {
       return res.status(404).json({ message: "Granth not found" });
@@ -183,14 +184,35 @@ const downloadGranth = async (req, res) => {
 
     const response = await fetch(granth.pdfUrl);
 
-    console.log("Cloudinary status:", response.status);
+    console.log("Cloudinary Status:", response.status);
+    console.log("Cloudinary OK:", response.ok);
+    console.log("Content-Type:", response.headers.get("content-type"));
 
     if (!response.ok) {
-      throw new Error("Unable to fetch PDF from Cloudinary");
+      const text = await response.text();
+      console.log("Cloudinary Error:", text);
+
+      return res.status(500).json({
+        message: "Unable to fetch PDF from Cloudinary",
+        status: response.status,
+        body: text,
+      });
     }
 
+    res.setHeader("Content-Type", "application/pdf");
+
+    const fileName = `${granth.name}_${granth.englishName}.pdf`
+      .replace(/[^\w\u0900-\u097F.-]/g, "_");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"`
+    );
+
+    Readable.fromWeb(response.body).pipe(res);
+
   } catch (err) {
-    console.error(err);
+    console.error("DOWNLOAD ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
