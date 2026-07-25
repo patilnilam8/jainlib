@@ -169,42 +169,29 @@ const deleteGranth = async (req, res) => {
 
 const downloadGranth = async (req, res) => {
   try {
+    console.log("Download ID:", req.params.id);
+
     const granth = await Granth.findById(req.params.id);
 
+    console.log("Granth:", granth);
+
     if (!granth) {
-      return res.status(404).json({
-        message: "Granth not found"
-      });
+      return res.status(404).json({ message: "Granth not found" });
     }
 
-    // increment download count
-    granth.downloadCount = (granth.downloadCount || 0) + 1;
-    await granth.save();
-console.log("PDF URL:", granth.pdfUrl);
+    console.log("PDF URL:", granth.pdfUrl);
+
     const response = await fetch(granth.pdfUrl);
+
+    console.log("Cloudinary status:", response.status);
 
     if (!response.ok) {
       throw new Error("Unable to fetch PDF from Cloudinary");
     }
 
-    const fileName =
-      `${granth.name}_${granth.englishName}.pdf`
-      .replace(/[^\w\u0900-\u097F.-]/g, "_");
-
-    res.setHeader("Content-Type", "application/pdf");
-
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${fileName}"`
-    );
-
-    response.body.pipe(res);
-
   } catch (err) {
     console.error(err);
-    res.status(500).json({
-      message: err.message
-    });
+    res.status(500).json({ message: err.message });
   }
 };
 
