@@ -204,15 +204,17 @@ const downloadGranth = async (req, res) => {
 
     res.setHeader("Content-Type", "application/pdf");
 
-    const fileName = `${granth.name}_${granth.englishName}.pdf`
-      .replace(/[^\w\u0900-\u097F.-]/g, "_");
+const asciiFileName = `${granth.englishName || "Granth"}`
+  .replace(/[^a-zA-Z0-9._-]/g, "_") + ".pdf";
 
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${fileName}"`
-    );
+const unicodeFileName = `${granth.name}_${granth.englishName}.pdf`;
 
-    Readable.fromWeb(response.body).pipe(res);
+res.setHeader(
+  "Content-Disposition",
+  `attachment; filename="${asciiFileName}"; filename*=UTF-8''${encodeURIComponent(unicodeFileName)}`
+);
+
+Readable.fromWeb(response.body).pipe(res);
 
   } catch (err) {
     console.error("DOWNLOAD ERROR:", err);
