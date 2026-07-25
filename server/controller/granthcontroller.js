@@ -180,7 +180,7 @@ const downloadGranth = async (req, res) => {
     // increment download count
     granth.downloadCount = (granth.downloadCount || 0) + 1;
     await granth.save();
-
+console.log("PDF URL:", granth.pdfUrl);
     const response = await fetch(granth.pdfUrl);
 
     if (!response.ok) {
