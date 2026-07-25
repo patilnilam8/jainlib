@@ -1,6 +1,6 @@
 const Granth = require("../Models/granth");
-const cloudinary = require("cloudinary");
-const axios = require("axios");
+const cloudinary = require("cloudinary").v2;
+
 
 
 
@@ -167,24 +167,46 @@ const deleteGranth = async (req, res) => {
   }
 };
 
+const downloadGranth = async (req, res) => {
+  try {
+    const granth = await Granth.findById(req.params.id);
 
-const response = await fetch(granth.pdfUrl);
+    if (!granth) {
+      return res.status(404).json({
+        message: "Granth not found"
+      });
+    }
 
-if (!response.ok) {
-  throw new Error("Unable to fetch PDF from Cloudinary");
-}
+    // increment download count
+    granth.downloadCount = (granth.downloadCount || 0) + 1;
+    await granth.save();
 
-res.setHeader("Content-Type", "application/pdf");
+    const response = await fetch(granth.pdfUrl);
 
-const fileName = `${granth.name}_${granth.englishName}.pdf`
-  .replace(/[^\w\u0900-\u097F.-]/g, "_");
+    if (!response.ok) {
+      throw new Error("Unable to fetch PDF from Cloudinary");
+    }
 
-res.setHeader(
-  "Content-Disposition",
-  `attachment; filename="${fileName}"`
-);
+    const fileName =
+      `${granth.name}_${granth.englishName}.pdf`
+      .replace(/[^\w\u0900-\u097F.-]/g, "_");
 
-response.body.pipe(res);
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"`
+    );
+
+    response.body.pipe(res);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: err.message
+    });
+  }
+};
 
 // ✅ Export all functions properly
 module.exports = { addGranth, getGranths, getGranthById, updateGranth, deleteGranth , downloadGranth};
