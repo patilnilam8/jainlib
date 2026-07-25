@@ -182,8 +182,10 @@ const downloadGranth = async (req, res) => {
     }
 
     console.log("PDF URL:", granth.pdfUrl);
+    console.log("Fetching:", granth.pdfUrl);
 
     const response = await fetch(granth.pdfUrl);
+    console.log("Status:", response.status);
 
     console.log("Cloudinary Status:", response.status);
     console.log("Cloudinary OK:", response.ok);
