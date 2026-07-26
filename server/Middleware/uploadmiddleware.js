@@ -41,15 +41,14 @@ const storage = new CloudinaryStorage({
   let publicId = safeName;
 
   if (file.mimetype === "application/pdf") {
-    publicId = `${safeName}${ext}`;
+    const publicId = `${safeName}_${Date.now()}${ext}`;
   }
 
  return {
   folder,
   public_id: publicId,
-  resource_type,
-  overwrite: true,
-  invalidate: true
+  resource_type
+  
 };
 }
 });

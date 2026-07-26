@@ -8,6 +8,8 @@ const { Readable } = require("stream");
 const addGranth = async (req, res) => {
   try {
     const { name, englishName } = req.body;
+    console.log("PDF Upload Object:");
+    console.log(req.files?.pdf?.[0]); 
 
     const pdfUrl = req.files?.pdf?.[0]?.path;
     const imageUrl = req.files?.image?.[0]?.path;
@@ -184,7 +186,11 @@ const downloadGranth = async (req, res) => {
     console.log("PDF URL:", granth.pdfUrl);
     console.log("Fetching:", granth.pdfUrl);
 
-    const response = await fetch(granth.pdfUrl);
+    const response = await fetch(granth.pdfUrl, {
+  headers: {
+    Accept: "application/pdf"
+  }
+});
     console.log("Status:", response.status);
 
     console.log("Cloudinary Status:", response.status);
